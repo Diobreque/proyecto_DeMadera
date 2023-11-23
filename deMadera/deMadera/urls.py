@@ -20,5 +20,7 @@ from app_deMadera import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index )
+    path('', views.index ),
+    path('cotizar/',views.cotizar),
+    path('cotizacion/',views.cotselect)
 ]
