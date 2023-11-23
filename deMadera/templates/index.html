@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static %}
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,34 +9,38 @@
 </head>
 <style>
   .navbar{
-    background-color: aqua;
+    background-color: #BC8064;
   }
 </style>
 <body>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">De madera</a>
+      <a class="navbar-brand" href="#" style="color: white; font-size: 2rem;">De madera</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Cotizar</a>
+            <a class="nav-link active" aria-current="page" href="#" style="color: white; font-size: 1rem;">Cotizar</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Nuestros clientes</a>
+            <a class="nav-link" href="#" style="color: white; font-size: 1rem;">Nuestros clientes</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Quienes somos</a>
+            <a class="nav-link" href="#" style="color: white; font-size: 1rem;">Quienes somos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Ubicación</a>
+            <a class="nav-link" href="#" style="color: white; font-size: 1rem;">Ubicación</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
+  <img src="{%static 'img/'%}{{imgPrincipal}}" width="100%" height="780px">
+  <div class="container-fluid" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    <h1 style="color: white; font-size: 5rem;">Bienvenidos a De madera</h1>
+  </div>
   
 </body>
 </html>
