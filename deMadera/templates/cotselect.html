@@ -122,18 +122,13 @@
                             </div>
                         </div>
                     </div>
-
-                    <form method="post" action="{% url 'create_desk' %}">
+                    
+                    <form id="selectionForm" method="post" action="{% url 'create_boleta' %}">
                         {% csrf_token %}
-                        <h3>Selecciona la Cubierta</h3>
-                        {% for desk in desks %}
-                            <input type="radio" name="selected_desk" value="{{ desk.id }}">{{ desk.name }} - ${{ desk.price }}<br>
-                        {% endfor %}
-                        <h3>Selecciona las Bases</h3>
-                        {% for leg in legs %}
-                            <input type="radio" name="selected_leg" value="{{ leg.id }}">{{ leg.name }} - ${{ leg.price }}<br>
-                        {% endfor %}
-                        <button type="submit">Continuar a Boleta</button>
+                        <input type="hidden" id="selected_desk_id" name="selected_desk_id">
+                        <input type="hidden" id="selected_leg_id" name="selected_leg_id">
+                        <!-- Este botón puede ser visible y se usará para enviar el formulario -->
+                        <button type="button" onclick="submitSelection()" class="btn btn-primary">Crear Boleta</button>
                     </form>
                     
                 
@@ -144,15 +139,19 @@
                         let totalPrice = 0;
                         let deskPrice = 0;
                         let legPrice = 0;
-                
-                        function selectDesk(name, price, imageUrl) {
+                        let selectedDeskId = null;
+                        let selectedLegId = null;
+                    
+                        function selectDesk(deskId, price, imageUrl) {
                             deskPrice = parseFloat(price);
+                            selectedDeskId = deskId; // Almacena el ID seleccionado
                             $('#selected-desk').html(`<img src="${imageUrl}" class="desk-image">`);
                             updateTotalPrice();
                         }
-                
-                        function selectLeg(name, price, imageUrl) {
+                    
+                        function selectLeg(legId, price, imageUrl) {
                             legPrice = parseFloat(price) * 2;
+                            selectedLegId = legId; // Almacena el ID seleccionado
                             $('#selected-legs').html(`
                                 <div class="leg-wrapper">
                                     <img src="${imageUrl}" class="leg-image left">
@@ -161,12 +160,17 @@
                             `);
                             updateTotalPrice();
                         }
-                
+                    
                         function updateTotalPrice() {
                             totalPrice = deskPrice + legPrice;
                             $('#total-price').text(`$${totalPrice.toFixed(2)}`);
                         }
+                    
+                        function submitSelection() {
+                            // Aquí puedes enviar los IDs al servidor, por ejemplo, usando un formulario oculto o una solicitud AJAX
+                        }
                     </script>
+                    
                 </body>
             </div>
         </div>

@@ -87,8 +87,9 @@ def update_desk(request):
 
 
 def create_boleta(request):
-    selected_desk_id = request.session.get('selected_desk_id')
-    selected_leg_id = request.session.get('selected_leg_id')
+    if request.method == 'POST':
+        selected_desk_id = request.POST.get('selected_desk_id')
+        selected_leg_id = request.POST.get('selected_leg_id')
 
     try:
         selected_desk = Desk.objects.get(id=selected_desk_id) if selected_desk_id else None
