@@ -122,6 +122,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <form method="post" action="{% url 'create_desk' %}">
+                        {% csrf_token %}
+                        <h3>Selecciona la Cubierta</h3>
+                        {% for desk in desks %}
+                            <input type="radio" name="selected_desk" value="{{ desk.id }}">{{ desk.name }} - ${{ desk.price }}<br>
+                        {% endfor %}
+                        <h3>Selecciona las Bases</h3>
+                        {% for leg in legs %}
+                            <input type="radio" name="selected_leg" value="{{ leg.id }}">{{ leg.name }} - ${{ leg.price }}<br>
+                        {% endfor %}
+                        <button type="submit">Continuar a Boleta</button>
+                    </form>
+                    
                 
                     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
                     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from .models import Desk, Leg
 from django.shortcuts import render
@@ -31,6 +31,18 @@ def cotselect(request):
 def create_desk(request):
     desks = Desk.objects.all()
     legs = Leg.objects.all()
+
+    if request.method == 'POST':
+        selected_desk_id = request.POST.get('selected_desk')
+        selected_leg_id = request.POST.get('selected_leg')
+
+        # Guardar las selecciones en la sesión
+        request.session['selected_desk_id'] = selected_desk_id
+        request.session['selected_leg_id'] = selected_leg_id
+
+        # Redirigir a la vista de creación de boleta
+        return redirect('create_boleta')
+
     context = {'desks': desks, 'legs': legs}
     return render(request, 'cotselect.html', context)
 
@@ -75,15 +87,30 @@ def update_desk(request):
 
 
 def create_boleta(request):
+    selected_desk_id = request.session.get('selected_desk_id')
+    selected_leg_id = request.session.get('selected_leg_id')
+
+    try:
+        selected_desk = Desk.objects.get(id=selected_desk_id) if selected_desk_id else None
+        selected_leg = Leg.objects.get(id=selected_leg_id) if selected_leg_id else None
+    except (Desk.DoesNotExist, Leg.DoesNotExist):
+        # Manejar el error si los objetos no existen
+        selected_desk = None
+        selected_leg = None
+
     if request.method == 'POST':
-        form = BoletaForm(request.POST)
-        if form.is_valid():
-            boleta = form.save()
-            # Generar el PDF aquí o redirigir a una vista que lo haga
-            return render(request, 'boleta_pdf.html', {'boleta': boleta})
+        # Aquí manejas la lógica de creación de la boleta
+        pass
     else:
         form = BoletaForm()
-    return render(request, 'creacion_boleta.html', {'form': form})
+
+    context = {
+        'form': form,
+        'selected_desk': selected_desk,
+        'selected_leg': selected_leg
+    }
+    return render(request, 'nombre_de_tu_app/creacion_boleta.html', context)
+
 
 def generate_pdf(request, boleta_id):
     boleta = Boleta.objects.get(id=boleta_id)
