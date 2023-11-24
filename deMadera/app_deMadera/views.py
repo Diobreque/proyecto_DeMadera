@@ -24,7 +24,7 @@ def create_desk(request):
     desks = Desk.objects.all()
     legs = Leg.objects.all()
     context = {'desks': desks, 'legs': legs}
-    return render(request, 'creacion_desk.html', context)
+    return render(request, 'cotselect.html', context)
 
 def index_desk(request):
     # Vista para la página principal que muestra las opciones de escritorios y patas.

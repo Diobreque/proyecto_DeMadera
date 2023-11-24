@@ -24,12 +24,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index ),
     path('cotizar/',views.cotizar),
-    path('cotizacion/',views.cotselect)
+    path('cotizacion/',views.create_desk),
     path('coti/', views.index_desk, name='index_desk'),
     path('update-desk/', views.update_desk, name='update_desk'),
-    path('crear-escritorio/', views.create_desk, name='create_desk'),
-
-]
+    path('crear-escritorio/', views.create_desk, name='create_desk')]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
