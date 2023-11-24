@@ -17,10 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from app_deMadera import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index ),
     path('cotizar/',views.cotizar),
     path('cotizacion/',views.cotselect)
+    path('coti/', views.index_desk, name='index_desk'),
+    path('update-desk/', views.update_desk, name='update_desk'),
+    path('crear-escritorio/', views.create_desk, name='create_desk'),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurador de Escritorios</title>
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .swiper-container { height: 200px; }
+        .swiper-slide { display: flex; justify-content: center; align-items: center; }
+        .swiper-slide img { max-width: 100%; max-height: 200px; }
+
+        .desk-preview {
+            position: relative;
+            width: 80%; /* Ajusta esto según el tamaño deseado para la imagen referencial */
+            margin: auto;
+            height: 300px; /* Asegura suficiente espacio para la cubierta y las patas */
+        }
+
+        .desk-preview img.desk-base {
+            width: 25%; /* Ajusta el ancho de las bases */
+            position: absolute;
+            bottom: 0; /* Alinea las bases al fondo del contenedor */
+            z-index: 1;
+        }
+
+        .desk-preview img.desk-top {
+            width: 100%; /* La cubierta ocupa todo el ancho */
+            position: absolute;
+            top: 0; /* Alinea la cubierta en la parte superior del contenedor */
+            z-index: 2;
+        }
+
+        .price-tag {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Swiper para la selección de la base -->
+<div class="swiper-container base-swiper-container">
+    <!-- Inicializar los sliders con las imágenes de las patas -->
+    <div class="swiper-wrapper">
+        {% for leg in legs %}
+        <div class="swiper-slide" data-price="{{ leg.price }}">
+            <img src="{{ leg.image.url }}" alt="{{ leg.name }}">
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Swiper para la selección de la cubierta -->
+<div class="swiper-container top-swiper-container">
+    <!-- Inicializar los sliders con las imágenes de las cubiertas -->
+    <div class="swiper-wrapper">
+        {% for desk in desks %}
+        <div class="swiper-slide" data-price="{{ desk.price }}">
+            <img src="{{ desk.image.url }}" alt="{{ desk.name }}">
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Vista previa del escritorio configurado -->
+<div class="desk-preview">
+    <!-- Selecciona la primera imagen de cada slider por defecto -->
+    <img id="selected-base-left" src="{{ legs.first.image.url }}" alt="Base izquierda" class="desk-base" style="left: 0;">
+    <img id="selected-base-right" src="{{ legs.first.image.url }}" alt="Base derecha" class="desk-base" style="right: 0;">
+    <img id="selected-top" src="{{ desks.first.image.url }}" alt="Cubierta del escritorio" class="desk-top">
+</div>
+
+<div class="price-tag">Precio Total: <span id="total-price">{{ legs.first.price + desks.first.price }}</span></div>
+
+<!-- Swiper JS -->
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    // Asumimos que ya has inicializado tus Swipers y tienes acceso a ellos
+    // Aquí tendrás que escribir la lógica para actualizar las imágenes y el precio cuando un slide cambie
+    // Por ejemplo, podrías hacer algo como esto en tus callbacks de Swiper:
+
+    function updatePreviewAndPrice(basePrice, topPrice) {
+        document.getElementById('total-price').textContent = (basePrice + topPrice).toFixed(2);
+    }
+
+    // Callback cuando cambia el slide de la base
+    function onBaseSlideChange() {
+        var baseSwiper = this;
+        var activeSlide = baseSwiper.slides[baseSwiper.activeIndex];
+        var baseImgSrc = activeSlide.querySelector('img').src;
+        var basePrice = parseFloat(activeSlide.getAttribute('data-price'));
+
+        document.getElementById('selected-base-left').src = baseImgSrc;
+        document.getElementById('selected-base-right').src = baseImgSrc;
+
+        var topPrice = parseFloat(document.querySelector('.top-swiper-container .swiper-slide-active').getAttribute('data-price'));
+        updatePreviewAndPrice(basePrice, topPrice);
+    }
+
+    // Callback cuando cambia el slide de la cubierta
+    function onTopSlideChange() {
+        var topSwiper = this;
+        var activeSlide = topSwiper.slides[topSwiper.activeIndex];
+        var topImgSrc = activeSlide.querySelector('img').src;
+        var topPrice = parseFloat(activeSlide.getAttribute('data-price'));
+
+        document.getElementById('selected-top').src = topImgSrc;
+
+        var basePrice = parseFloat(document.querySelector('.base-swiper-container .swiper-slide-active').getAttribute('data-price'));
+        updatePreviewAndPrice(basePrice, topPrice);
+    }
+
+    var baseSwiper = new Swiper('.base-swiper-container', {
+        on: { slideChange: onBaseSlideChange }
+    });
+
+    var topSwiper = new Swiper('.top-swiper-container', {
+        on: { slideChange: onTopSlideChange }
+    });
+</script>
+
+</body>
+</html>
