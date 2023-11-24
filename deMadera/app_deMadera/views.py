@@ -7,6 +7,7 @@ from .forms import BoletaForm
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from .models import Boleta
+from .forms import BoletaForm
 
 
 # Create your views here.

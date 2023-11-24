@@ -1,5 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Boleta</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Detalle de Boleta</h2>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Boleta N° {{ boleta.id }}</h5>
+                <p class="card-text">
+                    <strong>Nombre:</strong> {{ boleta.nombre }}<br>
+                    <strong>Teléfono:</strong> {{ boleta.telefono }}<br>
+                    <strong>Dirección:</strong> {{ boleta.direccion }}<br>
+                    <strong>Cubierta seleccionada:</strong> {{ boleta.cubierta.name }}<br>
+                    <strong>Bases seleccionadas:</strong> {{ boleta.bases.name }}<br>
+                    <strong>Total:</strong> ${{ boleta.total }}
+                </p>
+            </div>
+        </div>
+    </div>
 
-{% extends 'creacion_desk.html' %}
-{% block content %}
-  <a href="{% url 'generate_pdf' boleta.id %}">Descargar PDF</a>
-{% endblock %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

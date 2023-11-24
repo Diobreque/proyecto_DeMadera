@@ -1,8 +1,13 @@
-{% extends 'creacion_desk.html' %}
+<!-- creacion_boleta.html -->
+{% extends 'base.html' %}
+
 {% block content %}
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear Boleta</button>
-  </form>
+  <div class="container mt-4">
+    <h2>Crear Boleta</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Crear Boleta</button>
+    </form>
+  </div>
 {% endblock %}
