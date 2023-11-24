@@ -1,0 +1,7 @@
+
+<!-- boleta_pdf.html -->
+{% extends 'base.html' %}
+{% block content %}
+  <!-- Mostrar la información de la boleta aquí -->
+  <a href="{% url 'generate_pdf' boleta.id %}">Descargar PDF</a>
+{% endblock %}
