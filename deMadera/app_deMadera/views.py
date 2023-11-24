@@ -1,6 +1,13 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Desk, Leg
+from django.shortcuts import render
+from .models import Desk, Leg
+from .forms import BoletaForm
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from .models import Boleta
+
 
 # Create your views here.
 from django.shortcuts import render
@@ -61,3 +68,33 @@ def update_desk(request):
     }
     
     return JsonResponse(response)
+
+
+
+
+
+def create_boleta(request):
+    if request.method == 'POST':
+        form = BoletaForm(request.POST)
+        if form.is_valid():
+            boleta = form.save()
+            # Generar el PDF aquí o redirigir a una vista que lo haga
+            return render(request, 'boleta_pdf.html', {'boleta': boleta})
+    else:
+        form = BoletaForm()
+    return render(request, 'creacion_boleta.html', {'form': form})
+
+def generate_pdf(request, boleta_id):
+    boleta = Boleta.objects.get(id=boleta_id)
+    # Crea una respuesta HTTP de tipo PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="boleta.pdf"'
+
+    # Crea el PDF
+    p = canvas.Canvas(response)
+    p.drawString(100, 100, f"Boleta #{boleta.id} - Total: ${boleta.total}")
+    # ... Añade más elementos al PDF según sea necesario ...
+
+    p.showPage()
+    p.save()
+    return response
