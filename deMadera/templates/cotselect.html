@@ -130,6 +130,17 @@
                         <button type="submit" class="btn btn-primary">Crear Boleta</button>
                     </form>
 
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div>
+                                {{ field.label_tag }} {{ field }}
+                            </div>
+                        {% endfor %}
+                        <button type="submit">Crear Boleta</button>
+                    </form>
+                    
+
                     
                 
                     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

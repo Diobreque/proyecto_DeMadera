@@ -77,7 +77,7 @@ def create_boleta(request):
             del request.session['selected_desk_id']
             del request.session['selected_leg_id']
 
-            return redirect('success_url')
+            return redirect('boleta_pdf.html')
     else:
         form = BoletaForm()
         # No es necesario manejar selected_desk_id y selected_leg_id aquí si no se van a utilizar para pre-poblar el formulario
