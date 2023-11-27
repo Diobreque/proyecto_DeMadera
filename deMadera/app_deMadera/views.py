@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Desk, Leg
 from django.shortcuts import render
@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from .models import Boleta
 from .forms import BoletaForm
+from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
@@ -99,3 +100,19 @@ def generate_pdf(request, boleta_id):
     p.showPage()
     p.save()
     return response
+
+
+
+def login_view(request):
+    data = {"fondologin":"fondologin.jpg"}
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('admin:index')
+        else:
+            return render(request, 'login.html', {'error': 'Nombre de usuario o contraseña incorrectos'})
+    else:
+        return render(request, 'login.html',data)
