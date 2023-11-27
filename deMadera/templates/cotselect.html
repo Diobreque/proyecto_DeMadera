@@ -121,15 +121,15 @@
                                 <h4 class="mt-3">Precio Total: <span id="total-price">$0</span></h4>
                             </div>
                         </div>
-                    </div>
+                    </div></br>
                     
-                    <form id="selectionForm" method="post" action="{% url 'create_boleta' %}">
+                    <!-- nombre_de_tu_app/creacion_boleta.html -->
+                    <form method="post">
                         {% csrf_token %}
-                        <input type="hidden" id="selected_desk_id" name="selected_desk_id">
-                        <input type="hidden" id="selected_leg_id" name="selected_leg_id">
-                        <!-- Este botón puede ser visible y se usará para enviar el formulario -->
-                        <button type="button" onclick="submitSelection()" class="btn btn-primary">Crear Boleta</button>
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Crear Boleta</button>
                     </form>
+
                     
                 
                     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
