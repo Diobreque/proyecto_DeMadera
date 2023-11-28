@@ -1,190 +1,148 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>Crea tu Escritorio</title>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ephesis&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Noto+Sans:ital,wght@1,200&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Manrope&family=Noto+Sans:ital,wght@1,200&display=swap" rel="stylesheet">
     <style>
         .image-option { cursor: pointer; }
         #desk-builder { position: relative; }
-        .desk-image { display: block; width: 100%; position: relative; z-index: 2; margin-top: -200px;}
-        .leg-wrapper { display: flex; margin-top: -390px; } /* si bajo mas el valor, mas baja la cubierta */
-        .leg-image { display: block; width: 30%; position: relative; z-index: 1; left: 20%;}
-        .leg-image.right { transform: scale(1.3); z-index: 1; margin-top: 60px;}
-
-        .carousel-inner img {
-            max-height: 90%x;
-            width: auto;
-            margin: auto;
-        }
-        .carousel {
-            max-width: 40%;
-            margin: auto;
-        }
-        *{
-            font-family: 'Manrope', sans-serif;
-        }
+        .desk-image { display: block; width: 100%; position: relative; z-index: 2; margin-top: -200px; }
+        .leg-wrapper { display: flex; margin-top: -390px; }
+        .leg-image { display: block; width: 30%; position: relative; z-index: 1; left: 20%; }
+        .leg-image.right { transform: scale(1.3); z-index: 1; margin-top: 60px; }
+        .carousel-inner img { max-height: 90%; width: auto; margin: auto; }
+        .carousel { max-width: 40%; margin: auto; }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg" style="background-color: #BC8064;">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#" style="color: white; font-size: 2rem; font-family: 'Ephesis', cursive;">De madera</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#" style="color: white; font-size: 1rem;">Cotizar</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="#" style="color: white; font-size: 1rem;">Nuestros clientes</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="#" style="color: white; font-size: 1rem;">Quienes somos</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="#" style="color: white; font-size: 1rem;">Ubicación</a>
-                    </li>
-                </ul>
+            <a class="navbar-brand" href="#" style="color: white; font-size: 2rem;">De madera</a>
+            <!-- Resto del navbar -->
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="text-center my-4">Crea tu Escritorio</h1>
+
+        <h3>Selecciona la Cubierta</h3>
+        <div id="deskCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                {% for desk in desks %}
+                <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                    <img src="{{ desk.image.url }}" class="d-block w-100 image-option" onclick="selectDesk('{{ desk.id }}', '{{ desk.price }}', '{{ desk.image.url }}')">
+                </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#deskCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Anterior</span>
+            </a>
+            <a class="carousel-control-next" href="#deskCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Siguiente</span>
+            </a>
+        </div>
+
+        <h3>Selecciona las Bases</h3>
+        <div id="legCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                {% for leg in legs %}
+                <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                    <img src="{{ leg.image.url }}" class="d-block w-100 image-option" onclick="selectLeg('{{ leg.id }}', '{{ leg.price }}', '{{ leg.image.url }}')">
+                </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" href="#legCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Anterior</span>
+            </a>
+            <a class="carousel-control-next" href="#legCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Siguiente</span>
+            </a>
+        </div>
+
+        <div class="row my-4">
+            <div class="col-md-12">
+                <h3>Tu Selección</h3>
+                <div id="desk-builder">
+                    <div id="selected-desk"></div>
+                    <div id="selected-legs"></div> 
+                </div>
+                <h4 class="mt-3">Precio Total: <span id="total-price">$0</span></h4>
             </div>
         </div>
-      </nav>
-      <!-- Inicio imagen izquierda y separador derecha -->
-      <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <!-- Agregar img aca -->
-            </div>
-            <div>
-                <body>
-                    <div class="container">
-                        <h1 class="text-center my-4">Crea tu Escritorio agregar campo de dimensiones de tabla y el boton siguiente para hacer la "boleta"</h1>
-                        <!-- Carrusel para las cubiertas -->
-                        <h3>Selecciona la Cubierta</h3>
-                        <div id="deskCarousel" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                {% for desk in desks %}
-                                <div class="carousel-item{% if forloop.first %} active{% endif %}">
-                                    <img src="{{ desk.image.url }}" class="d-block w-100 image-option" onclick="selectDesk('{{ desk.name }}', '{{ desk.price }}', '{{ desk.image.url }}')">
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <a class="carousel-control-prev" href="#deskCarousel" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Anterior</span>
-                            </a>
-                            <a class="carousel-control-next" href="#deskCarousel" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Siguiente</span>
-                            </a>
-                        </div>
-                
-                        <!-- Carrusel para las bases -->
-                        <h3>Selecciona las Bases</h3>
-                        <div id="legCarousel" class="carousel slide" data-ride="carousel">
-                            <div class="carousel-inner">
-                                {% for leg in legs %}
-                                <div class="carousel-item{% if forloop.first %} active{% endif %}">
-                                    <img src="{{ leg.image.url }}" class="d-block w-100 image-option" onclick="selectLeg('{{ leg.name }}', '{{ leg.price }}', '{{ leg.image.url }}')">
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <a class="carousel-control-prev" href="#legCarousel" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Anterior</span>
-                            </a>
-                            <a class="carousel-control-next" href="#legCarousel" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Siguiente</span>
-                            </a>
-                        </div>
-                        <div class="row my-4">
-                            <div class="col-md-12">
-                                <h3>Tu Selección</h3>
-                                <div id="desk-builder">
-                                    <div id="selected-desk"></div>
-                                    <div id="selected-legs"></div> 
-                                </div>
-                                <h4 class="mt-3">Precio Total: <span id="total-price">$0</span></h4>
-                            </div>
-                        </div>
-                    </div></br>
-                    
-                    <!-- nombre_de_tu_app/creacion_boleta.html -->
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Crear Boleta</button>
-                    </form>
 
-                    <form method="post">
-                        {% csrf_token %}
-                        {% for field in form %}
-                            <div>
-                                {{ field.label_tag }} {{ field }}
-                            </div>
-                        {% endfor %}
-                        <button type="submit">Crear Boleta</button>
-                    </form>
-                    
-
-                    
-                
-                    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-                
-                    <script>
-                        let totalPrice = 0;
-                        let deskPrice = 0;
-                        let legPrice = 0;
-                        let selectedDeskId = null;
-                        let selectedLegId = null;
-                    
-                        function selectDesk(deskId, price, imageUrl) {
-                            deskPrice = parseFloat(price);
-                            selectedDeskId = deskId; // Almacena el ID seleccionado
-                            $('#selected-desk').html(`<img src="${imageUrl}" class="desk-image">`);
-                            updateTotalPrice();
-                        }
-                    
-                        function selectLeg(legId, price, imageUrl) {
-                            legPrice = parseFloat(price) * 2;
-                            selectedLegId = legId; // Almacena el ID seleccionado
-                            $('#selected-legs').html(`
-                                <div class="leg-wrapper">
-                                    <img src="${imageUrl}" class="leg-image left">
-                                    <img src="${imageUrl}" class="leg-image right">
-                                </div>
-                            `);
-                            updateTotalPrice();
-                        }
-                    
-                        function updateTotalPrice() {
-                            totalPrice = deskPrice + legPrice;
-                            $('#total-price').text(`$${totalPrice.toFixed(2)}`);
-                        }
-                    
-                        function submitSelection() {
-                            // Aquí puedes enviar los IDs al servidor, por ejemplo, usando un formulario oculto o una solicitud AJAX
-                        }
-                    </script>
-                    
-                </body>
+        <form id="selectionForm" method="post" action="{% url 'create_boleta' %}">
+            {% csrf_token %}
+            <input type="hidden" name="cubierta" id="selected_desk_id" value="">
+            <input type="hidden" name="bases" id="selected_leg_id" value="">
+            <input type="hidden" name="total" id="total_price" value="">
+        
+            <div class="mb-3">
+                <label for="nombreCliente" class="form-label">Nombre:</label>
+                <input type="text" class="form-control" id="nombreCliente" name="nombre" required>
             </div>
-        </div>
-      </div>
+            <div class="mb-3">
+                <label for="telefonoCliente" class="form-label">Teléfono:</label>
+                <input type="text" class="form-control" id="telefonoCliente" name="telefono" required>
+            </div>
+            <div class="mb-3">
+                <label for="direccionCliente" class="form-label">Dirección:</label>
+                <input type="text" class="form-control" id="direccionCliente" name="direccion" required>
+            </div>
+
+            <button type="button" onclick="submitSelection()" class="btn btn-primary">Crear Boleta</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        let totalPrice = 0;
+        let deskPrice = 0;
+        let legPrice = 0;
+        let selectedDeskId = null;
+        let selectedLegId = null;
+
+        function selectDesk(deskId, price, imageUrl) {
+            deskPrice = parseFloat(price);
+            selectedDeskId = deskId;
+            document.getElementById('selected_desk_id').value = deskId;
+            $('#selected-desk').html(`<img src="${imageUrl}" class="desk-image">`);
+            updateTotalPrice();
+        }
+
+        function selectLeg(legId, price, imageUrl) {
+            legPrice = parseFloat(price) * 2;
+            selectedLegId = legId;
+            document.getElementById('selected_leg_id').value = legId;
+            $('#selected-legs').html(`
+                <div class="leg-wrapper">
+                    <img src="${imageUrl}" class="leg-image left">
+                    <img src="${imageUrl}" class="leg-image right">
+                </div>
+            `);
+            updateTotalPrice();
+        }
+
+        function updateTotalPrice() {
+            totalPrice = deskPrice + legPrice;
+            $('#total-price').text(`$${totalPrice.toFixed(2)}`);
+            document.getElementById('total_price').value = totalPrice;
+        }
+
+        function submitSelection() {
+            $('#selected_desk_id').val(selectedDeskId);
+            $('#selected_leg_id').val(selectedLegId);
+            $('#total_price').val(totalPrice);
+            $('#selectionForm').submit();
+        }
+    </script>
 </body>
 </html>

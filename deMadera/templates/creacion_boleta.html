@@ -1,13 +1,12 @@
-<!-- creacion_boleta.html -->
-{% extends 'base.html' %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Confirmar Boleta</button>
+</form>
 
-{% block content %}
-  <div class="container mt-4">
-    <h2>Crear Boleta</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Crear Boleta</button>
-    </form>
-  </div>
-{% endblock %}
+<div>
+  <h3>Selección:</h3>
+  <p>Cubierta: {{ selected_desk.name }} - Precio: ${{ selected_desk.price }}</p>
+  <p>Bases: {{ selected_leg.name }} - Precio: ${{ selected_leg.price }}</p>
+  <p>Total: ${{ total_price }}</p>
+</div>

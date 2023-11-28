@@ -26,7 +26,7 @@ urlpatterns = [
     path('cotizar/',views.cotizar),
     path('cotizacion/',views.create_desk),
     path('crear-boleta/', views.create_boleta, name='create_boleta'),
-    path('boleta-pdf/<int:boleta_id>/', views.generate_pdf, name='generate_pdf'),]
+    path('ver-boleta/<int:boleta_id>/', views.ver_boleta, name='ver_boleta'),]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

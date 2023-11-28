@@ -16,9 +16,9 @@
                     <strong>Nombre:</strong> {{ boleta.nombre }}<br>
                     <strong>Teléfono:</strong> {{ boleta.telefono }}<br>
                     <strong>Dirección:</strong> {{ boleta.direccion }}<br>
-                    <strong>Cubierta seleccionada:</strong> {{ boleta.cubierta.name }}<br>
-                    <strong>Bases seleccionadas:</strong> {{ boleta.bases.name }}<br>
-                    <strong>Total:</strong> ${{ boleta.total }}
+                    <strong>Cubierta:</strong> {{ boleta.cubierta.nombre }} - Precio: ${{ boleta.cubierta.precio }}<br>
+                    <strong>Bases:</strong> {{ boleta.bases.nombre }} - Precio: ${{ boleta.bases.precio }}<br>
+                    <strong>Total:</strong> ${{ boleta.total }}<br>
                 </p>
             </div>
         </div>

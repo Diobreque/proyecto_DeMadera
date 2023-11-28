@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from .models import Desk, Leg
 from django.shortcuts import render
@@ -25,78 +25,96 @@ def cotizar(request):
             "escritoriomadera":"escritoriomadera.jpg"}
     return render(request,"cotizar.html", data)
 
-def cotselect(request):
-    return render(request,"cotselect.html")
-
-
-
-
-def create_desk(request):
-    desks = Desk.objects.all()
-    legs = Leg.objects.all()
-
-    if request.method == 'POST':
-        selected_desk_id = request.POST.get('selected_desk')
-        selected_leg_id = request.POST.get('selected_leg')
-
-        # Guardar las selecciones en la sesión
-        request.session['selected_desk_id'] = selected_desk_id
-        request.session['selected_leg_id'] = selected_leg_id
-
-        # Redirigir a la vista de creación de boleta
-        return redirect('create_boleta')
-
-    context = {'desks': desks, 'legs': legs}
-    return render(request, 'cotselect.html', context)
 
 
 from django.shortcuts import render, redirect
 from .models import Desk, Leg, Boleta
 from .forms import BoletaForm
 
+def create_desk(request):
+    desks = Desk.objects.all()
+    legs = Leg.objects.all()
+
+    if request.method == 'POST':
+        form = BoletaForm(request.POST)
+        if form.is_valid():
+            selected_desk_id = request.POST.get('selected_desk_id')
+            selected_leg_id = request.POST.get('selected_leg_id')
+
+            boleta = form.save(commit=False)
+            boleta.cubierta = Desk.objects.get(id=selected_desk_id)
+            boleta.bases = Leg.objects.get(id=selected_leg_id)
+
+            # Calcula el precio total aquí si es necesario
+            boleta.total = boleta.cubierta.price + boleta.bases.price * 2
+
+            boleta.save()
+            return redirect('ver_boleta', boleta_id=boleta.id)
+
+    else:
+        form = BoletaForm()
+
+    context = {'desks': desks, 'legs': legs, 'form': form}
+    return render(request, 'cotselect.html', context)
+
+
+def ver_boleta(request, boleta_id):
+    boleta = get_object_or_404(Boleta, id=boleta_id)
+    return render(request, 'ver_boleta.html', {'boleta': boleta})
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Desk, Leg, Boleta
+from .forms import BoletaForm
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Desk, Leg, Boleta
+from .forms import BoletaForm
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Desk, Leg, Boleta
+from .forms import BoletaForm
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Desk, Leg, Boleta
+from .forms import BoletaForm
+import logging
+
+logger = logging.getLogger(__name__)
+
 def create_boleta(request):
     if request.method == 'POST':
         form = BoletaForm(request.POST)
         if form.is_valid():
+            selected_desk_id = request.POST.get('selected_desk_id')
+            selected_leg_id = request.POST.get('selected_leg_id')
             boleta = form.save(commit=False)
-            selected_desk_id = request.session.get('selected_desk_id')
-            selected_leg_id = request.session.get('selected_leg_id')
+            # ... configuración adicional de 'boleta' si es necesario ...
+            boleta.save()
+            return redirect('ver_boleta', boleta_id=boleta.id)
+
+            # Verificar si los IDs están presentes
+            if not selected_desk_id or not selected_leg_id:
+                messages.error(request, 'Faltan datos del escritorio o las bases.')
+                return render(request, 'pagina_error.html', {'form': form})
 
             try:
-                selected_desk = Desk.objects.get(id=selected_desk_id) if selected_desk_id else None
-                selected_leg = Leg.objects.get(id=selected_leg_id) if selected_leg_id else None
-            except (Desk.DoesNotExist, Leg.DoesNotExist):
-                selected_desk = None
-                selected_leg = None
-
-            boleta.cubierta = selected_desk
-            boleta.bases = selected_leg
-            boleta.total = selected_desk.price + selected_leg.price * 2
-            boleta.save()
-
-            del request.session['selected_desk_id']
-            del request.session['selected_leg_id']
-
-            return redirect('boleta_pdf.html')
+                boleta = form.save(commit=False)
+                boleta.cubierta = Desk.objects.get(id=selected_desk_id)
+                boleta.bases = Leg.objects.get(id=selected_leg_id)
+                boleta.total = request.POST.get('total_price')
+                boleta.save()
+                return redirect('ver_boleta', boleta_id=boleta.id)
+            except (Desk.DoesNotExist, Leg.DoesNotExist, ValueError) as e:
+                logger.error("Error al crear boleta: {}".format(e))
+                messages.error(request, 'Hubo un error al procesar tu selección.')
+                return render(request, 'pagina_error.html', {'form': form})
+        else:
+            messages.error(request, 'Información del formulario no válida.')
+            return render(request, 'pagina_error.html', {'form': form})
     else:
-        form = BoletaForm()
-        # No es necesario manejar selected_desk_id y selected_leg_id aquí si no se van a utilizar para pre-poblar el formulario
-
-    return render(request, 'boleta_pdf.html', {'form': form})
-
-
-
-def generate_pdf(request, boleta_id):
-    boleta = Boleta.objects.get(id=boleta_id)
-    # Crea una respuesta HTTP de tipo PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="boleta.pdf"'
-
-    # Crea el PDF
-    p = canvas.Canvas(response)
-    p.drawString(100, 100, f"Boleta #{boleta.id} - Total: ${boleta.total}")
-    # ... Añade más elementos al PDF según sea necesario ...
-
-    p.showPage()
-    p.save()
-    return response
+    # El formulario no es válido
+        print("Formulario no válido:", form.errors)
+        logger.debug("Errores del formulario: %s", form.errors)
+        messages.error(request, 'Información del formulario no válida.')
+        return render(request, 'pagina_error.html', {'form': form})
