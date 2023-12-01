@@ -35,6 +35,9 @@
         *{
             font-family: 'Manrope', sans-serif;
         }
+        .carousel-control-next-icon, .carousel-control-prev-icon {
+            filter: invert(100%);
+        }
     </style>
 </head>
 <body>
@@ -94,7 +97,7 @@
                 
                         <!-- Carrusel para las bases -->
                         <h3>Selecciona las Bases</h3>
-                        <div id="legCarousel" class="carousel slide" data-ride="carousel">
+                        <div id="legCarousel" class="carousel slide" data-ride="carousel" style="position: relative; z-index: 3;">
                             <div class="carousel-inner">
                                 {% for leg in legs %}
                                 <div class="carousel-item{% if forloop.first %} active{% endif %}">
@@ -122,23 +125,47 @@
                             </div>
                         </div>
                     </div>
+                    <form class="form-group" style="position: relative; z-index: 3;">
+                        <div>
+                            <label for="exampleInputEmail">Correo Electronico</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Ej: Ingresa@email.com">
+                        </div>
+                        <div>
+                            <label for="exampleInputName">Nombre y apellido</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Ej: Juan Perez">
+                        </div>
+                        <div>
+                            <label for="exampleInputdireccion">Direccion</label>
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Ej: Tu direccion #111">
+                        </div>
+                        <div>
+                            <button  type="button" class="btn btn-warning" style="margin-top: 20px;" id="pdf-button">Generar PDF</button>
+                        </div>
+                        
+                    </form>
                 
                     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
                     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-                
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
                     <script>
-                        let totalPrice = 0;
-                        let deskPrice = 0;
-                        let legPrice = 0;
+                        const jsPDF = window.jspdf.jsPDF;
+                        var totalPrice = 0;
+                        var deskPrice = 0;
+                        var legPrice = 0;
+
+                        var selectedTop = null;
+                        var selectedLegs = null;
                 
                         function selectDesk(name, price, imageUrl) {
                             deskPrice = parseFloat(price);
+                            selectedTop = name
                             $('#selected-desk').html(`<img src="${imageUrl}" class="desk-image">`);
                             updateTotalPrice();
                         }
                 
                         function selectLeg(name, price, imageUrl) {
                             legPrice = parseFloat(price) * 2;
+                            selectedLegs = name
                             $('#selected-legs').html(`
                                 <div class="leg-wrapper">
                                     <img src="${imageUrl}" class="leg-image left">
@@ -152,7 +179,44 @@
                             totalPrice = deskPrice + legPrice;
                             $('#total-price').text(`$${totalPrice.toFixed(2)}`);
                         }
+
+                        function generatePDF() {
+                            let email = document.getElementById('email').value; 
+                            let name = document.getElementById('name').value;
+                            let address = document.getElementById('address').value;
+
+                            let doc = new jsPDF();
+
+                            doc.setFontSize(22);
+                            doc.setTextColor(92, 76, 76);
+                            doc.text(80, 10, 'DEMADERA');
+
+                            doc.setFontSize(18);
+                            doc.setTextColor(0, 0, 0);
+                            doc.text(10, 30, 'Datos Cliente');
+                            doc.setFontSize(16);
+                            doc.setTextColor(92, 76, 76);
+                            doc.text(10, 40, 'Email: ' + email);
+                            doc.text(10, 50, 'Nombre: ' + name);
+                            doc.text(10, 60, 'Direccion: ' + address); 
+
+                            doc.setFontSize(18);
+                            doc.setTextColor(0, 0, 0);
+                            doc.text(10, 70, 'Datos Mueble');
+                            doc.setFontSize(16);
+                            doc.setTextColor(92, 76, 76);
+                            doc.text(10, 80, 'Cubierta: ' + selectedTop + ' ($' + deskPrice + ')');
+                            doc.text(10, 90, 'Bases: ' + selectedLegs + ' ($' + legPrice + ')');
+                            doc.text(10, 100, 'Precio Total: ' + ' ($' + totalPrice + ')');
+
+                            doc.save('form.pdf');
+                        }
+
+document.getElementById('pdf-button').addEventListener('click', generatePDF);
+
                     </script>
+                    
+
                 </body>
             </div>
         </div>

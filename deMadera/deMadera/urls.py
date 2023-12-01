@@ -30,7 +30,8 @@ urlpatterns = [
     path('crear-escritorio/', views.create_desk, name='create_desk'),
     path('crear-boleta/', views.create_boleta, name='create_boleta'),
     path('boleta-pdf/<int:boleta_id>/', views.generate_pdf, name='generate_pdf'),
-    path('login/', views.login_view, name='login'),]
+    path('login/', views.login_view, name='login'),
+    path('funciona/',views.imprimirPDF, name='imprimirPDF'),]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,3 +1,4 @@
+import io
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .models import Desk, Leg
@@ -9,6 +10,8 @@ from reportlab.pdfgen import canvas
 from .models import Boleta
 from .forms import BoletaForm
 from django.contrib.auth import authenticate, login
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
 
 
 # Create your views here.
@@ -116,3 +119,50 @@ def login_view(request):
             return render(request, 'login.html', {'error': 'Nombre de usuario o contraseña incorrectos'})
     else:
         return render(request, 'login.html',data)
+    
+
+
+def imprimirPDF(request):
+    # Recoge los valores del formulario
+    email = request.POST.get('email')
+    name = request.POST.get('name')
+    address = request.POST.get('address')
+
+    # Crea un objeto de archivo en memoria
+    buffer = io.BytesIO()
+
+    # Crea el archivo PDF, utilizando el objeto como su "archivo"
+    p = canvas.Canvas(buffer)
+
+    # Dibuja cosas en el PDF. Aquí es donde se genera el PDF. 
+    # Consulta la documentación de ReportLab para obtener la lista completa de funcionalidades.
+    p.drawString(100, 100, "Correo Electronico: " + email)
+    p.drawString(100, 120, "Nombre y apellido: " + name)
+    p.drawString(100, 140, "Direccion: " + address)
+
+    # Cierra el objeto PDF limpiamente y termina la página
+    p.showPage()
+    p.save()
+
+    # Recupera el valor del objeto de tipo 'file'. Este será el contenido PDF.
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='datos.pdf')
+
+def some_view(request):
+    # Crea un objeto de archivo en memoria
+    buffer = io.BytesIO()
+
+    # Crea el archivo PDF, utilizando el objeto como su "archivo"
+    p = canvas.Canvas(buffer)
+
+    # Dibuja cosas en el PDF. Aquí es donde se genera el PDF. 
+    # Consulta la documentación de ReportLab para obtener la lista completa de funcionalidades.
+    p.drawString(100, 100, "Hello world.")
+
+    # Cierra el objeto PDF limpiamente y termina la página
+    p.showPage()
+    p.save()
+
+    # Recupera el valor del objeto de tipo 'file'. Este será el contenido PDF.
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='hello.pdf')
